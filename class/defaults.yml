@@ -12,4 +12,5 @@ parameters:
         source: https://redhat-cop.github.io/patch-operator
         version: v0.1.9
 
-    helm_values: {}
+    helm_values:
+      enableCertManager: true
