@@ -23,6 +23,7 @@ parameters:
         output_path: patch-operator/01_helm_chart
       - input_paths:
           - ${_base_directory}/component/main.jsonnet
+          - ${_base_directory}/component/external-certificates.jsonnet
         input_type: jsonnet
         output_path: patch-operator/
 

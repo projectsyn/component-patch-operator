@@ -30,6 +30,17 @@ default:: `cluster-admin`
 
 The name of the cluster role to grant the ServiceAccount.
 
+== `external_certificates`
+
+[horizontal]
+type:: dict
+default:: `{}`
+
+This parameter allows users to configure their own externally generated certificates for the patch-operator's webhook and metrics endpoints.
+Supported keys are `tls.key`, `tls.crt` and `ca.crt`.
+The component will generate secrets with type `kubernetes.io/tls` and the provided keys.
+If key `ca.crt` is missing, the component assumes that `tls.crt` is a self-signed certificate.
+
 == `charts`
 
 [horizontal]
@@ -52,4 +63,5 @@ enableCertManager: true
 The Helm values to use to render the `patch-operator` helm chart.
 
 We enable cert-manager integration for the admission webhook serving certificates by default.
-If you install the component on a cluster which doesn't have cert-manager installed, please disable this value and ensure webhook serving certificates are made available through some other means.
+
+NOTE: If you install the component on a cluster which doesn't have cert-manager installed, please disable this value and ensure webhook serving certificates are made available through parameter `external_certificates`.

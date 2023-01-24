@@ -7,6 +7,8 @@ parameters:
       name: patch-sa
       role_name: cluster-admin
 
+    external_certificates: {}
+
     charts:
       patch-operator:
         source: https://redhat-cop.github.io/patch-operator
