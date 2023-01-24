@@ -10,10 +10,46 @@ default:: `syn-patch-operator`
 
 The namespace in which to deploy this component.
 
+== `patch_serviceaccount`
 
-== Example
+This parameter allows users to customize the default service account which is managed by the component for any patches created through the component library.
 
+=== `patch_serviceaccount.name`
+
+[horizontal]
+type:: string
+default:: `patch-sa`
+
+The name of the service account.
+
+=== `patch_serviceaccount.cluster_role`
+
+[horizontal]
+type:: dict
+default:: `cluster-admin`
+
+The name of the cluster role to grant the ServiceAccount.
+
+== `charts`
+
+[horizontal]
+type:: dict
+default:: https://github.com/projectsyn/component-patch-operator/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+The Helm charts used by the component.
+
+== `helm_values`
+
+[horizontal]
+type:: dict
+default::
++
 [source,yaml]
 ----
-namespace: example-namespace
+enableCertManager: true
 ----
+
+The Helm values to use to render the `patch-operator` helm chart.
+
+We enable cert-manager integration for the admission webhook serving certificates by default.
+If you install the component on a cluster which doesn't have cert-manager installed, please disable this value and ensure webhook serving certificates are made available through some other means.
