@@ -3,6 +3,10 @@ parameters:
     =_metadata: {}
     namespace: syn-patch-operator
 
+    patch_serviceaccount:
+      name: patch-sa
+      role_name: cluster-admin
+
     charts:
       patch-operator:
         source: https://redhat-cop.github.io/patch-operator
