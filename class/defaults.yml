@@ -2,3 +2,17 @@ parameters:
   patch_operator:
     =_metadata: {}
     namespace: syn-patch-operator
+
+    patch_serviceaccount:
+      name: patch-sa
+      role_name: cluster-admin
+
+    external_certificates: {}
+
+    charts:
+      patch-operator:
+        source: https://redhat-cop.github.io/patch-operator
+        version: v0.1.9
+
+    helm_values:
+      enableCertManager: true

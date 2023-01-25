@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    name: patch-operator-certs
+  name: patch-operator-certs
+stringData:
+  ca.crt: t-silent-test-1234/c-green-test-1234/patch-operator/metrics-cert/cert
+  tls.crt: t-silent-test-1234/c-green-test-1234/patch-operator/metrics-cert/cert
+  tls.key: t-silent-test-1234/c-green-test-1234/patch-operator/metrics-cert/key
+type: kubernetes.io/tls
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    name: webhook-server-cert
+  name: webhook-server-cert
+stringData:
+  ca.crt: t-silent-test-1234/c-green-test-1234/patch-operator/webhook-cert/cacert
+  tls.crt: t-silent-test-1234/c-green-test-1234/patch-operator/webhook-cert/cert
+  tls.key: t-silent-test-1234/c-green-test-1234/patch-operator/webhook-cert/key
+type: kubernetes.io/tls

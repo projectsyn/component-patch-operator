@@ -1,0 +1,109 @@
+= Configure external certificates
+
+[abstract]
+This how-to shows you how you can configure externally managed certificates to install the component on clusters which don't have cert-manager available.
+
+== Prerequisites
+
+The how-to assumes that you're familiar with using Project Syn to configure clusters.
+
+=== Required CLI tools
+
+* `commodore`
+* `openssl`
+* `vault`
+* `yq`
+
+== Steps
+
+. Set cluster id and tenant id as environment variables
++
+[source,bash]
+----
+export CLUSTER_ID=c-cluster-id-1234 <1>
+export TENANT_ID=t-tenant-id-1234 <1>
+----
+<1> Replace with the actual cluster id and tenant id of the cluster you want to configure.
+
+. Compile the cluster
++
+[source,bash]
+----
+commodore catalog compile ${CLUSTER_ID}
+----
++
+TIP: We recommend running `commodore catalog compile` in an empty directory.
+
+. Generate self-signed certificates for the patch-operator's webhook and metrics certificates.
++
+[source,bash]
+----
+operator_ns=syn-patch-operator <1>
+
+lifetime=3650 <2>
+
+webhook=patch-operator-webhook-service.${operator_ns}.svc
+metrics=patch-operator-controller-manager-metrics-service.${operator_ns}.svc
+
+openssl req -x509 -newkey rsa:4096 -nodes -keyout webhook.key -out webhook.crt -days ${lifetime} \
+  -subj "/CN=$webhook" -addext "subjectAltName = DNS:$webhook,DNS:${webhook}.cluster.local"
+openssl req -x509 -newkey rsa:4096 -nodes -keyout metrics.key -out metrics.crt -days ${lifetime} \
+  -subj "/CN=$metrics" -addext "subjectAltName = DNS:$metrics,DNS:${metrics}.cluster.local"
+----
+<1> Update if you're installing the patch operator in a different namespace.
+You can extract the actual operator namespace from the inventory with `kapitan inventory -t patch-operator | yq '.parameters.patch_operator.namespace'`.
+<2> Certificate lifetime in days.
+Adjust as necessary.
+
+. Store keys in Vault
++
+[source,bash]
+----
+export VAULT_ADDR=https://vault.example.com <1>
+vault login -metod=oidc <2>
+
+parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
+
+vault kv put $parent/patch-operator webhook-key=@webhook.key
+vault kv put $parent/patch-operator metrics-key=@metrics.key
+----
+<1> Replace with the URL of your Project Syn Vault instance.
+<2> This assumes that your Vault instance is setup with OIDC login for users.
+
+. Disable cert-manager integration in the component's Helm values and configure the external certificates instead
++
+[source,bash]
+----
+yq -i '.parameters.patch_operator.helm_values.enableCertManager=false' \
+  inventory/classes/${TENANT_ID}/${CLUSTER_ID}.yml
+
+webhook_cert=$(<webhook.crt)
+yq -i ".parameters.patch_operator.external_certificates.webhook.\"tls.crt\"=\"${webhook_cert}\"" \
+  inventory/classes/${TENANT_ID}/${CLUSTER_ID}.yml
+yq -i '.parameters.patch_operator.external_certificates.webhook."tls.key"="?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/webhook-key}"' \
+  inventory/classes/${TENANT_ID}/${CLUSTER_ID}.yml
+
+metrics_cert=$(<metrics.crt)
+yq -i ".parameters.patch_operator.external_certificates.metrics.\"tls.crt\"=\"${metrics_cert}\"" \
+  inventory/classes/${TENANT_ID}/${CLUSTER_ID}.yml
+yq -i '.parameters.patch_operator.external_certificates.metrics."tls.key"="?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/metrics-key}"' \
+  inventory/classes/${TENANT_ID}/${CLUSTER_ID}.yml
+----
+
+. Commit and push the configuration change
++
+[source,bash]
+----
+pushd inventory/classes/${TENANT_ID}
+git add ${CLUSTER_ID}.yml
+git commit -m "${CLUSTER_ID}: Configure external certificates for patch-operator"
+git push origin master
+popd
+----
+
+. Clean up temporary files
++
+[source,bash]
+----
+rm webhook.{key,crt} metrics.{key,crt}
+----

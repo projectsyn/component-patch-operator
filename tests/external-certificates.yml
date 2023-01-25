@@ -1,0 +1,13 @@
+parameters:
+  patch_operator:
+    external_certificates:
+      metrics:
+        tls.key: ?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/metrics-cert/key}
+        tls.crt: ?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/metrics-cert/cert}
+      webhook:
+        tls.key: ?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/webhook-cert/key}
+        tls.crt: ?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/webhook-cert/cert}
+        ca.crt: ?{vaultkv:${cluster:tenant}/${cluster:name}/patch-operator/webhook-cert/cacert}
+
+    helm_values:
+      enableCertManager: false

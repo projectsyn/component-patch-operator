@@ -1,0 +1,102 @@
+= Migrate from component `resource-locker`
+
+[abstract]
+This how-to shows how to migrate an existing component from component `resource-locker` to component `patch-operator`.
+
+The `resource-locker-operator` has been deprecated in favor of `patch-operator`, see the https://github.com/redhat-cop/resource-locker-operator#deprecation-notice[deprecation notice] on GitHub.
+We provide component `patch-operator` as a replacement for component `resource-locker`.
+Component `patch-operator` provides the same component library interface as component `resource-locker`, which makes the migration for most use cases quite straightforward.
+
+== Steps
+
+. Update your test definitions to download the `patch-operator.libsonnet` library instead of the `resource-locker.libjsonnet` library.
++
+[source,yaml]
+----
+parameters:
+  kapitan:
+    dependencies:
+      - type: https
+        source: https://raw.githubusercontent.com/projectsyn/component-patch-operator/v1.0.0/lib/patch-operator.libsonnet <1>
+        output_path: vendor/lib/patch-operator.libsonnet
+----
+<1> Update the source URL to use the latest available version of patch-operator.
+
+. Update any `local rl = import 'lib/resource-locker.libjsonnet'` to `local rl = import 'lib/patch-operator.libsonnet'`.
++
+TIP: If you rename the local name of the import, you'll also have to update all uses of the import.
++
+[IMPORTANT]
+====
+`patch-operator` doesn't support full resource locking.
+
+In Project Syn, we've never had a real use case for full resource locking anyway, since that can be done easily by ArgoCD.
+If you have any uses of `rl.Resource()` in your component, please remove them and manage the resource directly in the component.
+====
+
+
+. Run `make golden-diff`.
+
+. If there's errors, you may need to update your component's code to handle the new patch structure.
+`patch-operator` switches the `spec.patches` field from a list to an object.
+Where `resource-locker-operator` used field `id` to define unique names for each patch, `patch-operator` uses the object keys as unique patch names.
++
+We replicate the example custom resource transformation provided in the upstream deprecation notice below.
++
+.resource-locker-operator patch
+[source,yaml]
+----
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: ResourceLocker
+metadata:
+  name: test-simple-patch
+spec:
+  serviceAccountRef:
+    name: default
+  patches:
+  - targetObjectRef:
+      apiVersion: v1
+      kind: ServiceAccount
+      name: test
+      namespace: test-namespace
+    patchTemplate: |
+      metadata:
+        annotations:
+          foo: bar
+    patchType: application/strategic-merge-patch+json
+    id: patch1
+----
++
+.patch-operator patch
+[source,yaml]
+----
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: Patch
+metadata:
+  name: simple-patch
+spec:
+  serviceAccountRef:
+    name: default
+  patches:
+    patch1:
+      targetObjectRef:
+        apiVersion: v1
+        kind: ServiceAccount
+        name: test
+        namespace: test-namespace
+      patchTemplate: |
+        metadata:
+          annotations:
+            foo: bar
+      patchType: application/strategic-merge-patch+json
+----
+
+. Repeat steps 3 and 4 until your component generates correct `patch-operator` resources.
+
+. If you have multiple test cases, run `make golden-diff-all` to ensure that you've correctly updated your patches for all cases covered by tests.
+If you identify more patches which need updates, follow steps 3 and 4 for the test case which covers those patches.
+Use `make golden-diff -e instance=<the test case>` to run the golden diff for a specific non-default test case.
+
+. Once you're satisfied with the resulting patches, run `make gen-golden`, or `make gen-golden-all`.
+
+. Commit the result and create a PR for the component you're migrating.

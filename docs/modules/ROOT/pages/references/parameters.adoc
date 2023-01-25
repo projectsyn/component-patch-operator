@@ -10,10 +10,58 @@ default:: `syn-patch-operator`
 
 The namespace in which to deploy this component.
 
+== `patch_serviceaccount`
 
-== Example
+This parameter allows users to customize the default service account which is managed by the component for any patches created through the component library.
 
+=== `patch_serviceaccount.name`
+
+[horizontal]
+type:: string
+default:: `patch-sa`
+
+The name of the service account.
+
+=== `patch_serviceaccount.cluster_role`
+
+[horizontal]
+type:: dict
+default:: `cluster-admin`
+
+The name of the cluster role to grant the ServiceAccount.
+
+== `external_certificates`
+
+[horizontal]
+type:: dict
+default:: `{}`
+
+This parameter allows users to configure their own externally generated certificates for the patch-operator's webhook and metrics endpoints.
+Supported keys are `tls.key`, `tls.crt` and `ca.crt`.
+The component will generate secrets with type `kubernetes.io/tls` and the provided keys.
+If key `ca.crt` is missing, the component assumes that `tls.crt` is a self-signed certificate.
+
+== `charts`
+
+[horizontal]
+type:: dict
+default:: https://github.com/projectsyn/component-patch-operator/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+The Helm charts used by the component.
+
+== `helm_values`
+
+[horizontal]
+type:: dict
+default::
++
 [source,yaml]
 ----
-namespace: example-namespace
+enableCertManager: true
 ----
+
+The Helm values to use to render the `patch-operator` helm chart.
+
+We enable cert-manager integration for the admission webhook serving certificates by default.
+
+NOTE: If you install the component on a cluster which doesn't have cert-manager installed, please disable this value and ensure webhook serving certificates are made available through parameter `external_certificates`.

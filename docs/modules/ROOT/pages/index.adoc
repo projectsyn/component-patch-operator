@@ -1,5 +1,16 @@
 = patch-operator
 
-patch-operator is a Commodore component to manage patch-operator.
+patch-operator is a Commodore component to manage https://github.com/redhat-cop/patch-operator/[patch-operator].
 
-See the xref:references/parameters.adoc[parameters] reference for further details.
+The component renders the upstream Helm chart and sets up a default service account which is granted `cluster-admin` by default.
+All patches created through the component library are created in the operator's namespace and use the default service account managed by the component by default.
+
+See the xref:references/parameters.adoc[parameters] reference for further details on how to configure the component.
+
+If you're migrating your setup from resource-locker operator to patch-operator, see the xref:how-tos/migrate-from-resource-locker.adoc[migration how-to] for further details.
+
+By default, the component uses cert-manager to issue self-signed certificates for the metrics and webhook endpoints of the operator.
+Optionally, users can configure their own external certificates for these endpoints.
+See the xref:how-tos/external-certificates.adoc[external certificates how-to] for further details on how to setup external certificates.
+
+
