@@ -1,0 +1,8 @@
+parameters:
+  kapitan:
+    compile:
+      - input_type: jsonnet
+        input_paths:
+          - tests/test-patch.jsonnet
+          - tests/test-patch-long-name.jsonnet
+        output_path: tests/

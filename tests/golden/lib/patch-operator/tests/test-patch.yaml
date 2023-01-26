@@ -1,0 +1,20 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: Patch
+metadata:
+  annotations: {}
+  labels:
+    name: foo-test-d8c672cc5067d92
+  name: foo-test-d8c672cc5067d92
+  namespace: syn-patch-operator
+spec:
+  patches:
+    patch1:
+      patchTemplate: "\"spec\":\n  \"replicas\": 5"
+      patchType: application/strategic-merge-patch+json
+      targetObjectRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: test
+        namespace: foo
+  serviceAccountRef:
+    name: patch-sa

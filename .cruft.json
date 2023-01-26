@@ -7,7 +7,7 @@
       "name": "patch-operator",
       "slug": "patch-operator",
       "parameter_key": "patch_operator",
-      "test_cases": "defaults external-certificates",
+      "test_cases": "defaults external-certificates lib",
       "add_lib": "y",
       "add_pp": "y",
       "add_golden": "y",
