@@ -36,5 +36,5 @@ local patch_rbac = [
       },
     },
   },
-  '01_rbac': patch_rbac,
+  '10_rbac': patch_rbac,
 }
