@@ -6,3 +6,4 @@
 
 .Technical reference
 * xref:references/parameters.adoc[Parameters]
+* xref:references/lib-patch-operator.adoc[]
