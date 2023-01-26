@@ -95,7 +95,7 @@ local Patch(targetobj, patchtemplate, patchstrategy='application/strategic-merge
   [
     patch(
       name,
-      patch_operator_params.patch_serviceaccount_name,
+      patch_operator_params.patch_serviceaccount.name,
       std.prune(objdata),
       patchtemplate,
       patchstrategy
