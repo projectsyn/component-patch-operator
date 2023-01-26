@@ -51,8 +51,8 @@ local obj_name(objdata) =
         '%s-%s' % [ std.asciiLower(objdata.kind), name ];
     // Trim the prefix if it's too long, make sure the kind/namespace part of
     // the prefix remains.
-    if std.length(p) > 48 then
-      std.substr(p, 0, 48)
+    if std.length(p) > 47 then
+      std.substr(p, 0, 47)
     else
       p;
 
