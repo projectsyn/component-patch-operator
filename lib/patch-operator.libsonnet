@@ -64,7 +64,11 @@ local obj_name(objdata) =
   n;
 
 local render_patch(patch, rl_version, patch_id='patch1') =
-  { [patch_id]: patch };
+  std.trace(
+    'Parameter `rl_version` of `render_patch` is deprecated and no longer used, it will be removed in a future version.',
+    { [patch_id]: patch }
+  );
+
 
 local patch(name, saName, targetobjref, patchtemplate, patchtype='application/strategic-merge-patch+json') =
   kube._Object(apiVersion, 'Patch', name) {
@@ -98,12 +102,8 @@ local Patch(targetobj, patchtemplate, patchstrategy='application/strategic-merge
     ),
   ];
 
-local Resource(obj) =
-  error "patch-operator doesn't support kind `Resource`, please manage full resources directly in your component";
-
 {
   apiVersion: apiVersion,
-  Resource: Resource,
   Patch: Patch,
   renderPatch: render_patch,
 }
