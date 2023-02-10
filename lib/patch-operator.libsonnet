@@ -80,7 +80,7 @@ local patch(name, saName, targetobjref, patchtemplate, patchtype='application/st
         name: saName,
       },
       patches: {
-        patch1: {
+        [name + '-patch']: {
           targetObjectRef: targetobjref,
           patchTemplate: std.manifestYamlDoc(patchtemplate),
           patchType: patchtype,

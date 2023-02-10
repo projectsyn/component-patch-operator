@@ -16,3 +16,31 @@ parameters:
 
     helm_values:
       enableCertManager: true
+
+    monitoring_enabled: true
+
+    alerts:
+      PatchReconcileSlow:
+        enabled: true
+        rule:
+          annotations:
+            description: Patch operator controller {{$labels.controller}} has a high reconcile time for 10 minutes
+            message: Patch operator controller {{$labels.controller}} has a high reconcile time for 10 minutes
+            summary: Patch operator controller has a high reconcile time for 10 minutes
+          expr: |
+            1 - sum(rate(controller_runtime_reconcile_time_seconds_bucket{namespace="${patch_operator:namespace}", controller=~"openapi-watcher|patch", le="1"}[5m])) without (le) / rate(controller_runtime_reconcile_time_seconds_count{namespace="${patch_operator:namespace}", controller=~"openapi-watcher|patch"}[5m]) > 0.25
+          for: 10m
+          labels:
+            severity: warning
+      PatchReconcileErrors:
+        enabled: true
+        rule:
+          annotations:
+            description: Patch operator controller {{$labels.controller}} has reconciliation errors
+            message: Patch operator controller {{$labels.controller}} has reconciliation errors
+            summary: Patch operator controller has reconciliation errors
+          expr: |
+            rate(controller_runtime_reconcile_total{namespace="${patch_operator:namespace}", controller!~"openapi-watcher|patch", result="error"}[5m]) > 0
+          for: 4m
+          labels:
+            severity: warning

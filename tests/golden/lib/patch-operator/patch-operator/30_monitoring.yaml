@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations: {}
+  labels:
+    name: patch-operator-prometheus-rule
+  name: patch-operator-prometheus-rule
+  namespace: syn-patch-operator
+spec:
+  groups:
+    - name: patch.alerts
+      rules:
+        - alert: PatchReconcileErrors
+          annotations:
+            description: Patch operator controller {{$labels.controller}} has reconciliation
+              errors
+            message: Patch operator controller {{$labels.controller}} has reconciliation
+              errors
+            summary: Patch operator controller has reconciliation errors
+          expr: 'rate(controller_runtime_reconcile_total{namespace="syn-patch-operator",
+            controller!~"openapi-watcher|patch", result="error"}[5m]) > 0
+
+            '
+          for: 4m
+          labels:
+            severity: warning
+            syn: 'true'
+            syn_component: patch-operator
+        - alert: PatchReconcileSlow
+          annotations:
+            description: Patch operator controller {{$labels.controller}} has a high
+              reconcile time for 10 minutes
+            message: Patch operator controller {{$labels.controller}} has a high reconcile
+              time for 10 minutes
+            summary: Patch operator controller has a high reconcile time for 10 minutes
+          expr: '1 - sum(rate(controller_runtime_reconcile_time_seconds_bucket{namespace="syn-patch-operator",
+            controller=~"openapi-watcher|patch", le="1"}[5m])) without (le) / rate(controller_runtime_reconcile_time_seconds_count{namespace="syn-patch-operator",
+            controller=~"openapi-watcher|patch"}[5m]) > 0.25
+
+            '
+          for: 10m
+          labels:
+            severity: warning
+            syn: 'true'
+            syn_component: patch-operator
