@@ -74,6 +74,9 @@ local patch(name, saName, targetobjref, patchtemplate, patchtype='application/st
   kube._Object(apiVersion, 'Patch', name) {
     metadata+: {
       namespace: namespace,
+      annotations+: {
+        'argocd.argoproj.io/sync-options': 'SkipDryRunOnMissingResource=true',
+      },
     },
     spec+: {
       serviceAccountRef: {
