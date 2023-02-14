@@ -65,3 +65,57 @@ The Helm values to use to render the `patch-operator` helm chart.
 We enable cert-manager integration for the admission webhook serving certificates by default.
 
 NOTE: If you install the component on a cluster which doesn't have cert-manager installed, please disable this value and ensure webhook serving certificates are made available through parameter `external_certificates`.
+
+== `monitoring_enabled`
+
+[horizontal]
+type:: bool
+default:: `true`
+
+On OpenShift 4, the component sets label `openshift.io/cluster-monitoring=true` on the namespace, so that the patch operator `ServiceMonitor` object is picked up by the OpenShift 4 cluster monitoring stack.
+The component generates a `PrometheusRule` object with alerts as defined in `alerts`.
+
+== `alerts`
+
+[horizontal]
+type:: dict
+example::
++
+[source,yaml]
+----
+BadThingsHappening:
+  enabled: true
+  rule:
+    annotations:
+      description: Bad things have been happening on {{$labels.node}} for more than 10 minutes.
+      message: Bad things have been happening on {{$labels.node}} for more than 10 minutes.
+      runbook_url: https://hub.syn.tools/patch-operator/runbooks/BadThingsHappening.html
+    expr: |
+      bad_thing_happening == 1
+    for: 10m
+    labels:
+      severity: warning
+----
+
+
+`alerts` defines the alerts to be installed.
+The dictionary key is used as the name of the alert.
+Note that `alerts` is ignored if `monitoring_enabled` is set to `false`.
+
+
+=== `alerts.<name>.enabled`
+
+[horizontal]
+type:: bool
+
+Defines whether to install the alert.
+
+
+=== `alerts.<name>.rule`
+
+[horizontal]
+type:: dict
+
+Holds the configuration of the alert rule.
+
+See https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/[Prometheus Alerting Rules] for details.
