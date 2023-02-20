@@ -9,6 +9,7 @@ local alertlabels = {
   syn: 'true',
   syn_component: 'patch-operator',
 };
+local runbook_url(name) = 'https://hub.syn.tools/patch-operator/runbooks/%s.html' % [ name ];
 
 local alerts = function(name, groupName, alerts)
   com.namespaced(params.namespace, kube._Object('monitoring.coreos.com/v1', 'PrometheusRule', name) {
@@ -22,6 +23,9 @@ local alerts = function(name, groupName, alerts)
               function(field) alerts[field].rule {
                 alert: field,
                 labels+: alertlabels,
+                annotations+: {
+                  runbook_url: runbook_url(field),
+                },
               },
               std.objectFields(alerts)
             ),

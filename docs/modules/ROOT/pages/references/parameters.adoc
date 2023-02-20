@@ -79,6 +79,7 @@ The component generates a `PrometheusRule` object with alerts as defined in `ale
 
 [horizontal]
 type:: dict
+defaults:: https://github.com/projectsyn/component-patch-operator/blob/master/class/defaults.yml[See `class/defaults.yml`]
 example::
 +
 [source,yaml]
