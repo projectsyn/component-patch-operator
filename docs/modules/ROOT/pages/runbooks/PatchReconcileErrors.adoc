@@ -1,0 +1,25 @@
+= Alert rule: PatchReconcileErrors
+
+include::partial$runbooks/contribution_note.adoc[]
+
+== icon:glasses[] Overview
+
+This alert fires if any patch reconciliation results in an error.
+
+== icon:bug[] Steps for debugging
+
+
+=== Check the logs of patch-operator
+
+[source,shell]
+----
+$ kubectl -n syn-patch-operator logs deploy/patch-operator -c patch-operator
+----
+
+
+=== Check the status of the patch resource referenced in the alert
+
+[source,shell]
+----
+$ kubectl -n syn-patch-operator get patch -o yaml <PATCH_NAME>
+----

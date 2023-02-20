@@ -9,7 +9,7 @@ metadata:
   namespace: syn-patch-operator
 spec:
   patches:
-    patch1:
+    clusterrolebinding-system-build-strategy-docker-4b7cc202c83ea43-patch:
       patchTemplate: "\"annotations\":\n  \"rbac.authorization.kubernetes.io/autoupdate\"\
         : \"false\""
       patchType: application/strategic-merge-patch+json

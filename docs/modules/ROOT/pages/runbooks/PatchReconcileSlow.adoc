@@ -1,0 +1,24 @@
+= Alert rule: PatchReconcileSlow
+include::partial$runbooks/contribution_note.adoc[]
+
+== icon:glasses[] Overview
+
+This alert fires if more than 25% of operations within a 5-minute sliding window take longer than 1 second.
+
+== icon:bug[] Steps for debugging
+
+
+=== Check the logs of patch-operator
+
+[source,shell]
+----
+$ kubectl -n syn-patch-operator logs deploy/patch-operator -c patch-operator
+----
+
+
+=== Check the status of the patch resource referenced in the alert
+
+[source,shell]
+----
+$ kubectl -n syn-patch-operator get patch -o yaml <PATCH_NAME>
+----
