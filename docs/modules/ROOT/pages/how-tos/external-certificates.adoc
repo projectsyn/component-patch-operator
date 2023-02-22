@@ -64,8 +64,7 @@ vault login -metod=oidc <2>
 
 parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
 
-vault kv put $parent/patch-operator webhook-key=@webhook.key
-vault kv put $parent/patch-operator metrics-key=@metrics.key
+vault kv put $parent/patch-operator webhook-key=@webhook.key metrics-key=@metrics.key
 ----
 <1> Replace with the URL of your Project Syn Vault instance.
 <2> This assumes that your Vault instance is setup with OIDC login for users.
