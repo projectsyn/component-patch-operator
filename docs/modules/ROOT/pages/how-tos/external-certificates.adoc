@@ -46,9 +46,9 @@ webhook=patch-operator-webhook-service.${operator_ns}.svc
 metrics=patch-operator-controller-manager-metrics-service.${operator_ns}.svc
 
 openssl req -x509 -newkey rsa:4096 -nodes -keyout webhook.key -out webhook.crt -days ${lifetime} \
-  -subj "/CN=$webhook" -addext "subjectAltName = DNS:$webhook,DNS:${webhook}.cluster.local"
+  -subj "/CN=webhook" -addext "subjectAltName = DNS:$webhook,DNS:${webhook}.cluster.local"
 openssl req -x509 -newkey rsa:4096 -nodes -keyout metrics.key -out metrics.crt -days ${lifetime} \
-  -subj "/CN=$metrics" -addext "subjectAltName = DNS:$metrics,DNS:${metrics}.cluster.local"
+  -subj "/CN=metrics" -addext "subjectAltName = DNS:$metrics,DNS:${metrics}.cluster.local"
 ----
 <1> Update if you're installing the patch operator in a different namespace.
 You can extract the actual operator namespace from the inventory with `kapitan inventory -t patch-operator | yq '.parameters.patch_operator.namespace'`.
@@ -64,8 +64,7 @@ vault login -metod=oidc <2>
 
 parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
 
-vault kv put $parent/patch-operator webhook-key=@webhook.key
-vault kv put $parent/patch-operator metrics-key=@metrics.key
+vault kv put $parent/patch-operator webhook-key=@webhook.key metrics-key=@metrics.key
 ----
 <1> Replace with the URL of your Project Syn Vault instance.
 <2> This assumes that your Vault instance is setup with OIDC login for users.

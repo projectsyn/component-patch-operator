@@ -31,11 +31,19 @@ local fixupFn(obj) =
         w {
           clientConfig+: {
             // use ca.crt if specified, and assume self-signed cert otherwise.
-            caBundle: std.get(
+            local caBundle = std.get(
               external_certs.webhook,
               'ca.crt',
               external_certs.webhook['tls.crt']
             ),
+            // caBundle is expected to be base64-encoded, we encode here, if
+            // the provided caBundle value looks like a PEM-encoded
+            // certificate (i.e. starts with "-----BEGIN CERTIFICATE-----").
+            caBundle:
+              if std.startsWith(caBundle, '-----BEGIN CERTIFICATE-----') then
+                std.base64(caBundle)
+              else
+                caBundle,
           },
         }
         for w in super.webhooks

@@ -9,7 +9,7 @@ webhooks:
   - admissionReviewVersions:
       - v1
     clientConfig:
-      caBundle: ?{vaultkv:t-silent-test-1234/c-green-test-1234/patch-operator/webhook-cert/cacert}
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSS4uLi4uCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
       service:
         name: patch-operator-webhook-service
         namespace: syn-patch-operator
