@@ -19,11 +19,10 @@ metadata:
     name: webhook-server-cert
   name: webhook-server-cert
 stringData:
-  ca.crt: '-----BEGIN CERTIFICATE-----
-
+  ca.crt: |-
+    -----BEGIN CERTIFICATE-----
     MII.....
-
-    -----END CERTIFICATE-----'
+    -----END CERTIFICATE-----
   tls.crt: t-silent-test-1234/c-green-test-1234/patch-operator/webhook-cert/cert
   tls.key: t-silent-test-1234/c-green-test-1234/patch-operator/webhook-cert/key
 type: kubernetes.io/tls
