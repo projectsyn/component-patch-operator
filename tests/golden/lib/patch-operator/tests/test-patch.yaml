@@ -10,7 +10,9 @@ metadata:
 spec:
   patches:
     foo-test-d8c672cc5067d92-patch:
-      patchTemplate: "\"spec\":\n  \"replicas\": 5"
+      patchTemplate: |-
+        "spec":
+          "replicas": 5
       patchType: application/strategic-merge-patch+json
       targetObjectRef:
         apiVersion: apps/v1

@@ -10,8 +10,9 @@ metadata:
 spec:
   patches:
     clusterrolebinding-system-build-strategy-docker-4b7cc202c83ea43-patch:
-      patchTemplate: "\"annotations\":\n  \"rbac.authorization.kubernetes.io/autoupdate\"\
-        : \"false\""
+      patchTemplate: |-
+        "annotations":
+          "rbac.authorization.kubernetes.io/autoupdate": "false"
       patchType: application/strategic-merge-patch+json
       targetObjectRef:
         apiVersion: rbac.authorization.k8s.io/v1
