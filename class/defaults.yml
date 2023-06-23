@@ -25,7 +25,7 @@ parameters:
 
     alerts:
       PatchReconcileSlow:
-        enabled: true
+        enabled: false
         rule:
           annotations:
             description: Patch operator controller {{$labels.controller}} has a high reconcile time for 10 minutes
