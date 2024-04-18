@@ -34,3 +34,6 @@ parameters:
         - type: jsonnet
           filter: postprocess/fixup-helm-chart.jsonnet
           path: patch-operator/01_helm_chart/patch-operator/templates
+        - type: jsonnet
+          filter: postprocess/add-priorityclass.jsonnet
+          path: patch-operator/01_helm_chart/patch-operator/templates
