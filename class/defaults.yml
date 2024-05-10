@@ -15,7 +15,7 @@ parameters:
     charts:
       patch-operator:
         source: https://redhat-cop.github.io/patch-operator
-        version: v0.1.9
+        version: v0.1.11
 
     helm_values:
       enableCertManager: true
