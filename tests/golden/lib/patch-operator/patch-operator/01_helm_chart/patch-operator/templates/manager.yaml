@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: patch-operator
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: patch-operator
-    app.kubernetes.io/version: v0.1.9
-    helm.sh/chart: patch-operator-v0.1.9
+    app.kubernetes.io/version: v0.1.11
+    helm.sh/chart: patch-operator-v0.1.11
   name: patch-operator
 spec:
   replicas: 1
@@ -50,7 +50,7 @@ spec:
             - --leader-elect
           command:
             - /manager
-          image: quay.io/redhat-cop/patch-operator:v0.1.9
+          image: quay.io/redhat-cop/patch-operator:v0.1.11
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
