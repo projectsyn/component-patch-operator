@@ -4,6 +4,7 @@ parameters:
       replaces: resource-locker
       library_aliases:
         resource-locker.libjsonnet: patch-operator-migrate.libsonnet
+      multi_tenant: true
     namespace: syn-patch-operator
 
     patch_serviceaccount:
