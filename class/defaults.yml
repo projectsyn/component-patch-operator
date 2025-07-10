@@ -18,9 +18,26 @@ parameters:
         source: https://redhat-cop.github.io/patch-operator
         version: v0.1.11
 
+    images:
+      patch-operator:
+        registry: quay.io
+        repository: redhat-cop/patch-operator
+        tag: v0.1.11
+      kube-rbac-proxy:
+        registry: quay.io
+        repository: brancz/kube-rbac-proxy
+        tag: v0.19.1
+
     helm_values:
       enableCertManager: true
       enableMonitoring: ${patch_operator:monitoring_enabled}
+      image:
+        repository: ${patch_operator:images:patch-operator:registry}/${patch_operator:images:patch-operator:repository}
+        tag: ${patch_operator:images:patch-operator:tag}
+      kube_rbac_proxy:
+        image:
+          repository: ${patch_operator:images:kube-rbac-proxy:registry}/${patch_operator:images:kube-rbac-proxy:repository}
+          tag: ${patch_operator:images:kube-rbac-proxy:tag}
 
     monitoring_enabled: true
     priority_class: system-cluster-critical
